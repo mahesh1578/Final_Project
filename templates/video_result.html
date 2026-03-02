@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Result</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #0ea5e9;
+            --surface: rgba(255, 255, 255, 0.85);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: rgba(255, 255, 255, 0.5);
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: var(--text-main);
+            line-height: 1.5;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Beautiful Animated Background Blobs */
+        .blob {
+            position: absolute;
+            filter: blur(90px);
+            z-index: -1;
+            opacity: 0.5;
+            animation: float 12s ease-in-out infinite alternate;
+            border-radius: 50%;
+        }
+
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: var(--primary);
+        }
+
+        .blob-2 {
+            bottom: -10%;
+            right: -5%;
+            width: 600px;
+            height: 600px;
+            background: var(--secondary);
+            animation-delay: -4s;
+        }
+
+        .blob-3 {
+            top: 30%;
+            left: 50%;
+            width: 400px;
+            height: 400px;
+            background: var(--accent);
+            animation-delay: -8s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(50px, 30px) scale(1.1);
+            }
+
+            100% {
+                transform: translate(-30px, -20px) scale(0.9);
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Header */
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-title h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-title h1 i {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Result Panel */
+        .panel {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            animation: scaleUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+        }
+
+        @keyframes scaleUp {
+            from {
+                opacity: 0;
+                transform: scale(0.97) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Alert Messages */
+        .alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 1.25rem 1.5rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2.5rem;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            animation: slideRight 0.5s ease 0.3s both;
+        }
+
+        @keyframes slideRight {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert i {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .alert-danger {
+            background: rgba(254, 242, 242, 0.8);
+            color: #991b1b;
+            border: 1px solid rgba(254, 202, 202, 0.8);
+        }
+
+        .alert-danger i {
+            color: var(--danger);
+            animation: pulse 2s infinite;
+        }
+
+        .alert-success {
+            background: rgba(236, 253, 245, 0.8);
+            color: #065f46;
+            border: 1px solid rgba(167, 243, 208, 0.8);
+        }
+
+        .alert-success i {
+            color: var(--success);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Stats Blocks */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease 0.4s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent), var(--primary));
+            border-radius: 4px 0 0 4px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-main), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+
+        /* Visuals Grid */
+        .visuals-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .visual-block {
+            animation: fadeIn 0.8s ease 0.5s both;
+        }
+
+        .visual-block h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .visual-block h3 i {
+            color: var(--accent);
+        }
+
+        .visual-container {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            background-color: #0f172a;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.4s ease;
+            position: relative;
+        }
+
+        .visual-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px rgba(14, 165, 233, 0.2);
+        }
+
+        .visual-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Actions */
+        .action-bar {
+            display: flex;
+            gap: 1rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding-top: 2rem;
+            animation: fadeIn 1s ease 0.6s both;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            gap: 10px;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .btn-outline {
+            background-color: rgba(255, 255, 255, 0.5);
+            color: var(--text-main);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-outline:hover {
+            background-color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            color: white;
+            border: none;
+            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        @media (max-width: 900px) {
+            .visuals-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-bar {
+                flex-direction: column;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .panel {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="page-title">
+                <h1><i class="fas fa-satellite-dish"></i> Temporal Pipeline Log</h1>
+                <div class="page-subtitle">Video sequence intelligence extracted</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <!-- Message Alert -->
+            {% if crowd_detected %}
+            <div class="alert alert-danger">
+                <i class="fas fa-tower-broadcast"></i>
+                <div>
+                    <strong>Actionable Data Triggered</strong><br>
+                    <span>{{ message }}</span>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-success">
+                <i class="fas fa-badge-check"></i>
+                <div>
+                    <strong>Nominal Telemetry</strong><br>
+                    <span>{{ message }}</span>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if crowd_detected %}
+            <!-- KPIs -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label"><i class="fas fa-arrow-trend-up"></i> Spike Capacity</div>
+                    <div class="stat-number"
+                        style="background: linear-gradient(135deg, var(--danger), var(--secondary)); -webkit-background-clip: text;">
+                        {{ max_count|int }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label"><i class="fas fa-chart-line"></i> Median Flow</div>
+                    <div class="stat-number">{{ avg_count|int }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label"><i class="fas fa-film"></i> Sequence Protocol</div>
+                    <div class="stat-number"
+                        style="font-size: 2.2rem; margin-top: 10px; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text;">
+                        Active Stream</div>
+                </div>
+            </div>
+
+            <!-- Visuals Layout -->
+            <div class="visuals-grid">
+                <div class="visual-block">
+                    <h3><i class="fas fa-video"></i> Pre-Process Ingestion</h3>
+                    <div class="visual-container">
+                        <video controls muted>
+                            <source src="{{ url_for('static', filename='uploads/' + original_filename) }}"
+                                type="video/mp4">
+                            Browser rendering failed.
+                        </video>
+                    </div>
+                </div>
+
+                <div class="visual-block">
+                    <h3><i class="fas fa-microchip"></i> Engine Output Trace</h3>
+                    <div class="visual-container"
+                        style="border: 2px solid rgba(14, 165, 233, 0.4); box-shadow: 0 0 20px rgba(14,165,233,0.1);">
+                        <video controls autoplay muted loop>
+                            <source src="{{ url_for('display_video', videoname=processed_filename) }}"
+                                type="video/x-msvideo">
+                            <source src="{{ url_for('display_video', videoname=processed_filename) }}" type="video/mp4">
+                            Browser rendering failed.
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <a href="/" class="btn btn-outline">
+                    <i class="fas fa-reply"></i> Disconnect Stream
+                </a>
+                <a href="{{ url_for('download_video', videoname=processed_filename) }}" class="btn btn-outline">
+                    <i class="fas fa-file-video"></i> Extract Render
+                </a>
+                <a href="{{ url_for('download_video_report', processed_filename=processed_filename) }}"
+                    class="btn btn-primary">
+                    <i class="fas fa-chart-pie"></i> Deploy Report
+                </a>
+            </div>
+
+            {% else %}
+            <!-- No crowd scenario -->
+            <div class="action-bar" style="border: none; padding-top: 0;">
+                <a href="/" class="btn btn-outline">
+                    <i class="fas fa-reply"></i> Disconnect Stream
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+
+</html>
